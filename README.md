@@ -53,28 +53,6 @@ php -S localhost:8000 -t public
 
 The app will open at [http://localhost:8000](http://localhost:8000)
 
-## 📁 Project Structure
-```
-ticketflow-twig/
-├── public/
-│   ├── index.php          # Main router
-│   ├── css/
-│   │   └── style.css      # All styles
-│   └── js/
-│       └── app.js         # JavaScript logic
-├── views/
-│   ├── layout.twig        # Base layout
-│   ├── landing.twig       # Home page
-│   ├── auth.twig          # Login/Signup
-│   ├── dashboard.twig     # Dashboard
-│   └── tickets.twig       # Ticket management
-├── src/
-│   ├── Database.php       # Session-based storage
-│   └── Router.php         # Simple router
-├── vendor/                # Composer dependencies
-├── composer.json
-└── README.md
-```
 
 ## 🎯 Features Breakdown
 
@@ -175,7 +153,7 @@ sudo apt update
 sudo apt install php php-cli composer
 
 # Clone and setup
-git clone your-repo
+git clone https://github.com/Victorbjay/ticketflow-twig.git
 cd ticketflow-twig
 composer install
 
@@ -214,4 +192,4 @@ MIT License - Built for Frontend Wizards Stage 2
 
 ## 👨‍💻 Author
 
-Your Name - Frontend Wizards Cohort
+Victor O. - Frontend Wizards Cohort

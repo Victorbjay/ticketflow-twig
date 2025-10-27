@@ -1,0 +1,208 @@
+{% extends "layout.twig" %}
+
+{% block title %}Ticket Management{% endblock %}
+
+{% block content %}
+<div class="ticket-management">
+    <!-- Toast for success messages -->
+    {% if app.request.get('success') %}
+    <div class="toast toast-success" id="toast">
+        <div class="toast-content">
+            <span class="toast-icon">✓</span>
+            <span>
+                {% if app.request.get('success') == 'created' %}
+                    Ticket created successfully!
+                {% elseif app.request.get('success') == 'updated' %}
+                    Ticket updated successfully!
+                {% elseif app.request.get('success') == 'deleted' %}
+                    Ticket deleted successfully!
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="nav-brand">ResolveHub</div>
+                <a href="/dashboard" class="btn-back">← Dashboard</a>
+            </div>
+            <div class="nav-actions">
+                <span class="user-email">{{ user.email }}</span>
+                <a href="/logout" class="btn-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Ticket Management</h1>
+            <button class="btn-create" onclick="openModal('create')">
+                <span class="plus-icon">+</span>
+                Create Ticket
+            </button>
+        </div>
+
+        <!-- Empty State -->
+        {% if tickets|length == 0 %}
+        <div class="empty-state">
+            <div class="empty-icon">🎫</div>
+            <h3>No tickets yet</h3>
+            <p>Create your first ticket to get started</p>
+            <button class="btn-create" onclick="openModal('create')">
+                Create First Ticket
+            </button>
+        </div>
+        {% else %}
+
+        <!-- Tickets Grid -->
+        <div class="tickets-grid">
+            {% for ticket in tickets %}
+            <div class="ticket-card">
+                <!-- Status Badge -->
+                <div class="status-badge status-{{ ticket.status }}">
+                    {% if ticket.status == 'open' %}
+                        Open
+                    {% elseif ticket.status == 'in_progress' %}
+                        In Progress
+                    {% else %}
+                        Closed
+                    {% endif %}
+                </div>
+
+                <!-- Title -->
+                <h3>{{ ticket.title }}</h3>
+
+                <!-- Description -->
+                {% if ticket.description %}
+                <p class="description">
+                    {% if ticket.description|length > 120 %}
+                        {{ ticket.description|slice(0, 120) }}...
+                    {% else %}
+                        {{ ticket.description }}
+                    {% endif %}
+                </p>
+                {% endif %}
+
+                <!-- Priority -->
+                {% if ticket.priority %}
+                <div class="priority">
+                    <span>Priority:</span>
+                    <span class="priority-value">{{ ticket.priority }}</span>
+                </div>
+                {% endif %}
+
+                <!-- Actions -->
+                <div class="actions">
+                    <button class="btn-edit" onclick='openModal("edit", {{ ticket|json_encode }})'>
+                        Edit
+                    </button>
+                    <button class="btn-delete" onclick='openDeleteModal({{ ticket|json_encode }})'>
+                        Delete
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Create/Edit Modal -->
+    <div class="modal" id="ticketModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Create New Ticket</h2>
+
+            <form method="POST" id="ticketForm">
+                <!-- Title -->
+                <div class="form-group">
+                    <label for="title">Title *</label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        placeholder="Enter ticket title"
+                        required
+                        maxlength="100"
+                    />
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        placeholder="Enter ticket description (optional)"
+                        rows="4"
+                        maxlength="500"
+                    ></textarea>
+                </div>
+
+                <!-- Status -->
+                <div class="form-group">
+                    <label for="status">Status *</label>
+                    <select id="status" name="status" required>
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="closed">Closed</option>
+                    </select>
+                </div>
+
+                <!-- Priority -->
+                <div class="form-group">
+                    <label for="priority">Priority</label>
+                    <select id="priority" name="priority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+
+                <input type="hidden" id="ticketId" name="id" value="">
+
+                <!-- Actions -->
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-submit">
+                        Save Ticket
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content delete-modal">
+            <div class="delete-icon">⚠️</div>
+            <h2>Delete Ticket?</h2>
+            <p id="deleteMessage">Are you sure you want to delete this ticket? This action cannot be undone.</p>
+            
+            <form method="POST" action="/tickets/delete" id="deleteForm">
+                <input type="hidden" id="deleteTicketId" name="id" value="">
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeDeleteModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn-delete-confirm">
+                        Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 ResolveHub • Built for Frontend Wizards Stage 2</p>
+        </div>
+    </footer>
+</div>
+{% endblock %}

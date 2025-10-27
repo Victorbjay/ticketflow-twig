@@ -1,0 +1,112 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ isLogin ? 'Login' : 'Sign Up' }}{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <!-- Background Decorations -->
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+
+    <!-- Toast for errors -->
+    {% if app.request.get('error') %}
+    <div class="toast toast-error" id="toast">
+        <div class="toast-content">
+            <span class="toast-icon">⚠️</span>
+            <span>
+                {% if app.request.get('error') == 'invalid' %}
+                    Invalid credentials. Please try again.
+                {% elseif app.request.get('error') == 'mismatch' %}
+                    Passwords do not match.
+                {% else %}
+                    An error occurred. Please try again.
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="auth-container">
+        <!-- Back to Home -->
+        <div class="back-link">
+            <a href="/" class="btn-back">← Back to Home</a>
+        </div>
+
+        <div class="auth-card">
+            <!-- Logo/Title -->
+            <div class="auth-header">
+                <div class="auth-brand">ResolveHub</div>
+                <h2>{{ isLogin ? 'Welcome Back' : 'Create Account' }}</h2>
+                <p>{{ isLogin ? 'Sign in to manage your tickets' : 'Sign up to get started' }}</p>
+            </div>
+
+            <!-- Form -->
+            <form method="POST" action="{{ isLogin ? '/login' : '/signup' }}" id="authForm">
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        required
+                    />
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="••••••••"
+                        minlength="6"
+                        required
+                    />
+                </div>
+
+                <!-- Confirm Password (Signup only) -->
+                {% if not isLogin %}
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="••••••••"
+                        minlength="6"
+                        required
+                    />
+                </div>
+                {% endif %}
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit">
+                    {{ isLogin ? 'Sign In' : 'Create Account' }}
+                </button>
+            </form>
+
+            <!-- Toggle Login/Signup -->
+            <div class="auth-toggle">
+                <p>
+                    {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
+                    <a href="{{ isLogin ? '/signup' : '/login' }}" class="btn-toggle">
+                        {{ isLogin ? 'Sign up' : 'Sign in' }}
+                    </a>
+                </p>
+            </div>
+
+            <!-- Demo Credentials -->
+            {% if isLogin %}
+            <div class="demo-box">
+                <p class="demo-title">Demo Credentials:</p>
+                <p>Email: demo@resolvehub.com</p>
+                <p>Password: demo123</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

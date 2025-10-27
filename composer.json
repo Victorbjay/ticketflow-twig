@@ -1,0 +1,14 @@
+{
+  "name": "resolvehub/twig-app",
+  "description": "Ticket Management System - Twig/PHP Version",
+  "type": "project",
+  "require": {
+    "php": ">=7.4",
+    "twig/twig": "^3.0"
+  },
+  "autoload": {
+    "psr-4": {
+  "ResolveHub\\": "src/"
+    }
+  }
+}

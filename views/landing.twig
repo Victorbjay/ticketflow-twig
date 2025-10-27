@@ -1,0 +1,91 @@
+{% extends "layout.twig" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="landing-page">
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-brand">ResolveHub</div>
+            <a href="/login" class="btn-login">Login</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <!-- Decorative Circles -->
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Manage Tickets Like a Pro</h1>
+                <p>
+                    Streamline your workflow with our powerful ticket management system.
+                    Track, organize, and resolve issues faster than ever before.
+                </p>
+                <div class="hero-buttons">
+                    <a href="/signup" class="btn btn-primary">Get Started Free</a>
+                    <a href="/login" class="btn btn-secondary">Sign In</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wave SVG -->
+        <svg class="wave" viewBox="0 0 1440 120" preserveAspectRatio="none">
+            <path
+                d="M0,64L48,69.3C96,75,192,85,288,80C384,75,480,53,576,48C672,43,768,53,864,58.7C960,64,1056,64,1152,58.7C1248,53,1344,43,1392,37.3L1440,32L1440,120L1392,120C1344,120,1248,120,1152,120C1056,120,960,120,864,120C768,120,672,120,576,120C480,120,384,120,288,120C192,120,96,120,48,120L0,120Z"
+                fill="#0c1222"
+            />
+        </svg>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2>Everything You Need</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Smart Organization</h3>
+                    <p>Organize tickets by status, priority, and category with intelligent tagging</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning Fast</h3>
+                    <p>Built for speed. Create, update, and manage tickets in milliseconds</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Secure & Private</h3>
+                    <p>Your data is protected with enterprise-grade security standards</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="circle circle-3"></div>
+        <div class="container">
+            <h2>Ready to Transform Your Workflow?</h2>
+            <p>Join thousands of teams already managing their tickets efficiently</p>
+            <a href="/signup" class="btn btn-primary">Start Free Today</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-brand">ResolveHub</div>
+            <p>Built with passion for Frontend Wizards Stage 2</p>
+            <div class="footer-links">
+                <span>© 2025 ResolveHub</span>
+                <span>•</span>
+                <span>All Rights Reserved</span>
+            </div>
+        </div>
+    </footer>
+</div>
+{% endblock %}
