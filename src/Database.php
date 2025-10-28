@@ -8,6 +8,14 @@ class Database {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
+        // Seed a demo user for convenience in this simulated app if none exists.
+        if (!isset($_SESSION['ticketapp_user'])) {
+            // Do not overwrite an existing user; only seed when starting fresh.
+            $_SESSION['ticketapp_user'] = [
+                'email' => 'demo@resolvehub.com',
+                'password' => password_hash('demo123', PASSWORD_DEFAULT)
+            ];
+        }
     }
     
     // User Management

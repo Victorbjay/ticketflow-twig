@@ -37,11 +37,11 @@
             <div class="auth-header">
                 <div class="auth-brand">ResolveHub</div>
                 <h2>{{ isLogin ? 'Welcome Back' : 'Create Account' }}</h2>
-                <p>{{ isLogin ? 'Sign in to manage your tickets' : 'Sign up to get started' }}</p>
+                <p>{{ isLogin ? 'Sign in to manage your tickets' : 'Sign up to start managing tickets' }}</p>
             </div>
 
             <!-- Form -->
-            <form method="POST" action="{{ isLogin ? '/login' : '/signup' }}" id="authForm">
+            <form method="POST" action="{{ isLogin ? '/login' : '/signup' }}" id="authForm" onsubmit="return validateAuthForm(this)">
                 <!-- Email -->
                 <div class="form-group">
                     <label for="email">Email Address</label>

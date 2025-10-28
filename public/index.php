@@ -45,11 +45,22 @@ $router->get('/signup', function() use ($twig, $db) {
 $router->post('/login', function() use ($db) {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
-    
+    $isAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
+
     if ($db->authenticateUser($email, $password)) {
-        header('Location: /dashboard');
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'message' => 'Login successful']);
+        } else {
+            header('Location: /dashboard');
+        }
     } else {
-        header('Location: /login?error=invalid');
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Invalid credentials']);
+        } else {
+            header('Location: /login?error=invalid');
+        }
     }
     exit;
 });
@@ -59,15 +70,26 @@ $router->post('/signup', function() use ($db) {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
-    
+    $isAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
+
     if ($password !== $confirmPassword) {
-        header('Location: /signup?error=mismatch');
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Passwords do not match']);
+        } else {
+            header('Location: /signup?error=mismatch');
+        }
         exit;
     }
-    
+
     $db->createUser($email, $password);
     $db->authenticateUser($email, $password);
-    header('Location: /dashboard');
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'message' => 'Account created']);
+    } else {
+        header('Location: /dashboard');
+    }
     exit;
 });
 
@@ -106,40 +128,83 @@ $router->get('/tickets', function() use ($twig, $db) {
 // Create Ticket POST
 $router->post('/tickets/create', function() use ($db) {
     if (!$db->isAuthenticated()) {
-        header('Location: /login');
+        $isAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Your session has expired — please log in again.']);
+        } else {
+            header('Location: /login');
+        }
         exit;
     }
-    
-    $db->createTicket($_POST);
-    header('Location: /tickets?success=created');
+    $isAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
+    $ticket = $db->createTicket($_POST);
+    if ($isAjax) {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'message' => 'Ticket created', 'ticket' => $ticket]);
+    } else {
+        header('Location: /tickets?success=created');
+    }
     exit;
 });
 
 // Update Ticket POST
 $router->post('/tickets/update', function() use ($db) {
     if (!$db->isAuthenticated()) {
-        header('Location: /login');
+        $isAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Your session has expired — please log in again.']);
+        } else {
+            header('Location: /login');
+        }
         exit;
     }
-    
+    $isAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
     $id = $_POST['id'] ?? '';
     unset($_POST['id']);
-    
-    $db->updateTicket($id, $_POST);
-    header('Location: /tickets?success=updated');
+
+    $result = $db->updateTicket($id, $_POST);
+    if ($isAjax) {
+        if ($result) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'message' => 'Ticket updated', 'ticket' => $result]);
+        } else {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Failed to update ticket']);
+        }
+    } else {
+        header('Location: /tickets?success=updated');
+    }
     exit;
 });
 
 // Delete Ticket POST
 $router->post('/tickets/delete', function() use ($db) {
     if (!$db->isAuthenticated()) {
-        header('Location: /login');
+        $isAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
+        if ($isAjax) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Your session has expired — please log in again.']);
+        } else {
+            header('Location: /login');
+        }
         exit;
     }
-    
+    $isAjax = (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest');
     $id = $_POST['id'] ?? '';
-    $db->deleteTicket($id);
-    header('Location: /tickets?success=deleted');
+    $ok = $db->deleteTicket($id);
+    if ($isAjax) {
+        if ($ok) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'message' => 'Ticket deleted']);
+        } else {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Failed to delete ticket']);
+        }
+    } else {
+        header('Location: /tickets?success=deleted');
+    }
     exit;
 });
 
