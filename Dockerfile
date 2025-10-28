@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM php:8.3-cli-alpine
+FROM php:8.1-cli-alpine
 
 # Tools Composer needs for download/extract
 RUN apk add --no-cache git unzip
